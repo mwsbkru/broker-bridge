@@ -1,0 +1,8 @@
+bridge:
+  kafka:
+    fromUrl: fromUrl
+    fromTopic: fromTopic
+    fromConsumerGroup: fromConsumerGroup
+    toUrl: toUrl
+    toTopic: toTopic
+    toConsumerGroup: toConsumerGroup

@@ -45,7 +45,7 @@ func (b *Bridge) Run() error {
 		AllowAutoTopicCreation: true,
 	}
 
-	log.Println("Start consume from: ", b.fromUrl, "/", b.fromTopic, ". Send to: ", b.toUrl, "/", b.toTopic)
+	log.Printf("Start consume from: %v/%v (consumer group: %v). Send to: %v/%v.\n", b.fromUrl, b.fromTopic, b.fromConsumerGroup, b.toUrl, b.toTopic)
 
 	for {
 		message, err := fromReader.ReadMessage(context.Background())
