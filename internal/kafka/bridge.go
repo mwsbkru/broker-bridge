@@ -29,7 +29,7 @@ func NewBridge(cfg config.KafkaConfig) *Bridge {
 	}
 }
 
-func (b *Bridge) Run() error {
+func (b *Bridge) Run(ctx context.Context) error {
 	// make a new reader that consumes from topic-A
 	fromReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  []string{b.fromUrl},
@@ -48,8 +48,10 @@ func (b *Bridge) Run() error {
 	log.Printf("Start consume from: %v/%v (consumer group: %v). Send to: %v/%v.\n", b.fromUrl, b.fromTopic, b.fromConsumerGroup, b.toUrl, b.toTopic)
 
 	for {
-		message, err := fromReader.ReadMessage(context.Background())
+		message, err := fromReader.ReadMessage(ctx)
 		if err != nil {
+			connectToFromKafkaErrText := fmt.Sprintf("Reading from \"From Kafka\": %v", err)
+			log.Println(connectToFromKafkaErrText)
 			break
 		}
 		consumedLogMessage := fmt.Sprintf(
@@ -61,7 +63,7 @@ func (b *Bridge) Run() error {
 			string(message.Value))
 		log.Println(consumedLogMessage)
 
-		err = toWriter.WriteMessages(context.Background(),
+		err = toWriter.WriteMessages(ctx,
 			kafka.Message{
 				Key:   []byte(message.Key),
 				Value: []byte(message.Value),
@@ -70,13 +72,19 @@ func (b *Bridge) Run() error {
 
 		if err != nil {
 			failedKey := fmt.Sprintf(
-				"Failed to send message to kafka-receiver. %v. Key: %v; value: %v",
+				"Writing to \"To Kafka\". %v. Key: %v; value: %v",
 				err,
 				string(message.Key),
 				string(message.Value))
 			log.Println(failedKey)
 		} else {
 			log.Println("Message sent: ", string(message.Key))
+		}
+
+		select {
+		case <-ctx.Done():
+			return nil
+		default:
 		}
 	}
 

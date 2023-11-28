@@ -1,5 +1,7 @@
 package common
 
+import "context"
+
 type Bridge interface {
-	Run() error
+	Run(ctx context.Context) error
 }
