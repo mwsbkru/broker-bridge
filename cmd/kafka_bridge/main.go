@@ -15,7 +15,6 @@ const CONFIG_FILE_NAME = "config.yaml"
 
 func main() {
 	ctx, cancelFunc := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer cancelFunc()
 
 	go func() {
 		select {
@@ -25,11 +24,12 @@ func main() {
 	}()
 
 	var bridge common.Bridge
-
 	bridgeConfig := loadConfig()
 
 	bridge = kafka.NewBridge(bridgeConfig.Bridge.Kafka)
 	bridge.Run(ctx)
+
+	cancelFunc()
 	log.Println("Bridge terminated!")
 }
 
