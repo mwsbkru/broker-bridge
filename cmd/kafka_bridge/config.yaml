@@ -1,8 +1,9 @@
+# replace kafka1 and kafka 2 values in url params to container ip-address, if docker-kafkas used
 bridge:
   kafka:
-    fromUrl: fromUrl
-    fromTopic: fromTopic
+    fromUrl: kafka1:9092
+    fromTopic: topic1
     fromConsumerGroup: fromConsumerGroup
-    toUrl: toUrl
-    toTopic: toTopic
+    toUrl: kafka2:9093
+    toTopic: topic2
     toConsumerGroup: toConsumerGroup
