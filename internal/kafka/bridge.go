@@ -64,28 +64,28 @@ func (b *Bridge) Run(ctx context.Context) error {
 
 	for {
 		message, err := fromReader.ReadMessage(ctx)
+		var processedMessage string
+		if len(message.Key) > 0 {
+			processedMessage = string(message.Key)
+		} else {
+			processedMessage = "key not set"
+		}
+
 		if err != nil {
 			connectToFromKafkaErrText := fmt.Sprintf("Reading from \"From Kafka\": %v", err)
 			log.Println(connectToFromKafkaErrText)
 			break
 		}
 		consumedLogMessage := fmt.Sprintf(
-			"Consumed message from kafka-sender at topic/partition/offset %v/%v/%v: %s = %s",
+			"Consumed message from kafka-sender at topic/partition/offset %v/%v/%v. Key: %s. Message: %s.",
 			message.Topic,
 			message.Partition,
 			message.Offset,
-			string(message.Key),
+			processedMessage,
 			string(message.Value))
 		log.Println(consumedLogMessage)
 
 		for i, writer := range writers {
-			var processedMessage string
-			if len(message.Key) > 0 {
-				processedMessage = string(message.Key)
-			} else {
-				processedMessage = "Key not set"
-			}
-
 			err = writer.WriteMessages(ctx,
 				kafka.Message{
 					Key:   []byte(processedMessage),
