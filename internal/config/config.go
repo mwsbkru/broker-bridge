@@ -13,6 +13,10 @@ type KafkaConfig struct {
 	FromTopic         string `yaml:"fromTopic"`
 	FromConsumerGroup string `yaml:"fromConsumerGroup"`
 
+	Receivers []KafkaReceiver `yaml:"receivers"`
+}
+
+type KafkaReceiver struct {
 	ToUrl           string `yaml:"toUrl"`
 	ToTopic         string `yaml:"toTopic"`
 	ToConsumerGroup string `yaml:"toConsumerGroup"`
