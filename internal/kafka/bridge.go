@@ -79,10 +79,17 @@ func (b *Bridge) Run(ctx context.Context) error {
 		log.Println(consumedLogMessage)
 
 		for i, writer := range writers {
+			var processedMessage string
+			if len(message.Key) > 0 {
+				processedMessage = string(message.Key)
+			} else {
+				processedMessage = "Key not set"
+			}
+
 			err = writer.WriteMessages(ctx,
 				kafka.Message{
-					Key:   []byte(message.Key),
-					Value: []byte(message.Value),
+					Key:   []byte(processedMessage),
+					Value: message.Value,
 				},
 			)
 
@@ -98,7 +105,7 @@ func (b *Bridge) Run(ctx context.Context) error {
 			} else {
 				messegeSendedText := fmt.Sprintf(
 					"Message sent: %v. Receiver url: %v. Topic: %v",
-					string(message.Key), // TODO разобраться, почему тут нет ключа
+					processedMessage,
 					b.receivers[i].toUrl,
 					b.receivers[i].toTopic)
 				log.Println(messegeSendedText)

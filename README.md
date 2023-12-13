@@ -32,15 +32,18 @@ For debug purposes, in folder `test-environment` prepared docker-compose.yml (ba
 consumer: `docker compose exec kafka2 kafka-console-consumer --bootstrap-server kafka1:19092 --topic topic1 --from-beginning`
 
 producer: `docker compose exec kafka3 kafka-console-producer --bootstrap-server kafka1:19092 --topic topic1`
+producer with key: `docker compose exec kafka3 kafka-console-producer --bootstrap-server kafka1:19092 --topic topic1 --property "parse.key=true" -property "key.separator=:"`
 
 #### Kafka 2
 
 consumer: `docker compose exec kafka1 kafka-console-consumer --bootstrap-server kafka2:19093 --topic topic2 --from-beginning`
 
 producer: `docker compose exec kafka3 kafka-console-producer --bootstrap-server kafka2:19093 --topic topic2`
+producer with key: `docker compose exec kafka3 kafka-console-producer --bootstrap-server kafka2:19093 --topic topic2 --property "parse.key=true" -property "key.separator=:"`
 
 #### Kafka 3
 
 consumer: `docker compose exec kafka1 kafka-console-consumer --bootstrap-server kafka3:19094 --topic topic3 --from-beginning`
 
 producer: `docker compose exec kafka2 kafka-console-producer --bootstrap-server kafka3:19094 --topic topic3`
+producer with key: `docker compose exec kafka2 kafka-console-producer --bootstrap-server kafka3:19094 --topic topic3 --property "parse.key=true" -property "key.separator=:"`
